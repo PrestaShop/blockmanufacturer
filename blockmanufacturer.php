@@ -29,15 +29,15 @@ if (!defined('_PS_VERSION_'))
 
 class BlockManufacturer extends Module
 {
-    public function __construct()
-    {
-        $this->name = 'blockmanufacturer';
-        $this->tab = 'front_office_features';
-        $this->version = '1.2.2';
+	public function __construct()
+	{
+		$this->name = 'blockmanufacturer';
+		$this->tab = 'front_office_features';
+		$this->version = '1.2.2';
 		$this->author = 'PrestaShop';
 		$this->need_instance = 0;
 
-        $this->bootstrap = true;
+		$this->bootstrap = true;
 		parent::__construct();
 
 		$this->displayName = $this->l('Manufacturers block');
@@ -98,6 +98,33 @@ class BlockManufacturer extends Module
 	public function hookRightColumn($params)
 	{
 		return $this->hookLeftColumn($params);
+	}
+	
+	public function hookDisplayHomeTab($params)
+	{
+		return $this->display(__FILE__, 'tab.tpl', $this->getCacheId('blockmanufacturer-tab'));
+	}
+
+	public function hookDisplayHomeTabContent($params)
+	{
+	if (!$this->isCached('blockmanufacturer_home.tpl', $this->getCacheId('blockmanufacturer-home')))
+			$manufacturers = Manufacturer::getManufacturers(true);
+			foreach ($manufacturers as &$manufacturer)
+			{
+				$manufacturer['image'] = $this->context->language->iso_code.'-default';
+				if (file_exists(_PS_MANU_IMG_DIR_.$manufacturer['id_manufacturer'].'-'.ImageType::getFormatedName('medium').'.jpg'))
+					$manufacturer['image'] = $manufacturer['id_manufacturer'];
+			}
+
+			$this->smarty->assign(array(
+				'manufacturers' => $manufacturers,
+				'text_list' => Configuration::get('MANUFACTURER_DISPLAY_TEXT'),
+				'text_list_nb' => Configuration::get('MANUFACTURER_DISPLAY_TEXT_NB'),
+				'form_list' => Configuration::get('MANUFACTURER_DISPLAY_FORM'),
+				'display_link_manufacturer' => Configuration::get('PS_DISPLAY_SUPPLIERS'),
+			));
+
+		return $this->display(__FILE__, 'blockmanufacturer_home.tpl', $this->getCacheId('blockmanufacturer-home'));
 	}
 
 	public function getContent()
