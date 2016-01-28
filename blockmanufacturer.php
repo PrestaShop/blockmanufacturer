@@ -80,7 +80,7 @@ class BlockManufacturer extends Module
 			foreach ($manufacturers as &$manufacturer)
 			{
 				$manufacturer['image'] = $this->context->language->iso_code.'-default';
-				if (file_exists(_PS_MANU_IMG_DIR_.$manufacturer['id_manufacturer'].'-'.ImageType::getFormatedName('medium').'.jpg'))
+				if (file_exists(_PS_MANU_IMG_DIR_.$manufacturer['id_manufacturer'].'-'.ImageType::getFormattedName('medium').'.jpg'))
 					$manufacturer['image'] = $manufacturer['id_manufacturer'];
 			}
 
